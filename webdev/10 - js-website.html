@@ -10,20 +10,56 @@
     <div id="status">
         <!-- Der Status des Haustiers wird hier angezeigt -->
     </div>
+    <select id="futter_select">
+        <option value="0">Avocado</option>
+        <option value="1">Salat</option>
+        <option value="2">Abgelaufen und verbrannt</option>
+    </select>
     <button onclick="fuettern(Haustier)">Füttern</button>
     <button onclick="spielen(Haustier)">Spielen</button>
     <button onclick="schlafen(Haustier)">Schlafen</button>
 
     <script>
-        // 1. Erstelle das Haustier-Objekt
+
+        const Futter = [
+            {
+                name: "Avocado",
+                hunger: 10,
+                energie: 5,
+                freude: 3,
+            },
+            {
+                name: "Salat",
+                hunger: 2,
+                energie: 2,
+                freude: 0,
+            },
+            {
+                name: "Abgelaufen und verbrannt",
+                hunger: -5,
+                energie: -5,
+                freude: -10,
+            },
+        ];
+
         const Haustier = {
             name: "Günter",
             hunger: 50,
             energie: 100,
-            freude: 70
+            freude: 70,
         };
 
-        // 2. Funktion zur Status-Anzeige
+        function setData(haustier, hunger, energie, freude) {
+            haustier.hunger = hunger > 0 ? ((haustier.hunger + hunger) > 100 ? 100 : haustier.hunger + hunger) :
+                                           ((haustier.hunger + hunger) < 0 ? 0 : haustier.hunger + hunger);
+
+            haustier.energie = energie > 0 ? ((haustier.energie + energie) > 100 ? 100 : haustier.energie + energie) :
+                                           ((haustier.energie + energie) < 0 ? 0 : haustier.energie + energie);
+
+            haustier.freude = freude > 0 ? ((haustier.freude + freude) > 100 ? 100 : haustier.freude + freude) :
+                                           ((haustier.freude + freude) < 0 ? 0 : haustier.freude + freude);
+       }
+
         function zeigeStatus(haustier) {
             const statusDiv = document.getElementById("status");
             statusDiv.innerHTML = `
@@ -33,54 +69,50 @@
             `;
         }
 
-        // 3. Funktion für Füttern
         function fuettern(haustier) {
-            haustier.hunger = (haustier.hunger + 20) > 100 ? 100 : haustier.hunger + 20; // Hunger auffüllen, max. 100
-            haustier.energie = (haustier.energie + 5) > 100 ? 100 : haustier.energie + 5; // Energie leicht erhöhen
+            const futter =  Futter[parseInt(document.getElementById("futter_select").value)]
+
+            setData(haustier, futter.hunger, futter.energie, futter.freude)
+
             checkLife(haustier);
             zeigeStatus(haustier);
         }
 
-        // 4. Funktion für Spielen
         function spielen(haustier) {
-            haustier.freude = (haustier.freude + 15) > 100 ? 100 : haustier.freude + 15; // Freude erhöhen, max. 100
-            haustier.energie = (haustier.energie - 10) < 0 ? 0 : haustier.energie - 10; // Energie senken, min. 0
-            haustier.hunger = (haustier.hunger - 5) < 0 ? 0 : haustier.hunger - 5;     // Hunger leicht erhöhen
+            haustier.freude = (haustier.freude + 15) > 100 ? 100 : haustier.freude + 15;
+            haustier.energie = (haustier.energie - 10) < 0 ? 0 : haustier.energie - 10;
+            haustier.hunger = (haustier.hunger - 5) < 0 ? 0 : haustier.hunger - 5;
             checkLife(haustier);
             zeigeStatus(haustier);
         }
 
-        // 5. Funktion für Schlafen
         function schlafen(haustier) {
-            haustier.energie = 100; // Energie auffüllen
-            haustier.hunger = (haustier.hunger - 10) < 0 ? 0 : haustier.hunger - 10; // Hunger erhöhen
+            haustier.energie = 100;
+            haustier.hunger = (haustier.hunger - 10) < 0 ? 0 : haustier.hunger - 10;
             checkLife(haustier);
             zeigeStatus(haustier);
         }
 
-        // Funktion zur Lebensprüfung
         function checkLife(haustier) {
             if (haustier.hunger <= 0 || haustier.energie <= 0 || haustier.freude <= 0) {
                 alert(`${haustier.name} ist gestorben! Game Over.`);
-                clearInterval(intervalId); // Stoppe das Intervall
+                clearInterval(intervalId);
                 document.body.innerHTML = `<h1>${haustier.name} ist leider gestorben...</h1>`;
             }
         }
 
-        // Funktion zur automatischen Verschlechterung der Werte
         function calcDegrade(haustier) {
-            haustier.hunger = (haustier.hunger - 1) < 0 ? 0 : haustier.hunger - 1;   // Hunger sinkt
-            haustier.energie = (haustier.energie - 2) < 0 ? 0 : haustier.energie - 2; // Energie sinkt
-            haustier.freude = (haustier.freude - 1) < 0 ? 0 : haustier.freude - 1;   // Freude sinkt
+            haustier.hunger = (haustier.hunger - 1) < 0 ? 0 : haustier.hunger - 1;
+            haustier.energie = (haustier.energie - 2) < 0 ? 0 : haustier.energie - 2;
+            haustier.freude = (haustier.freude - 1) < 0 ? 0 : haustier.freude - 1;
             checkLife(haustier);
             zeigeStatus(haustier);
         }
 
-        // Initiale Anzeige des Status
         zeigeStatus(Haustier);
 
-        // Starte das automatische Verschlechterungs-Intervall (alle 3 Sekunden)
-        setInterval(function() {calcDegrade(Haustier);}, 3000);
+
+        setInterval(()=> {calcDegrade(Haustier);}, 3000);
     </script>
 </body>
 </html>
