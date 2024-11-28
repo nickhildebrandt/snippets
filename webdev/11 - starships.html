@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        table, th, td {
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Raumschiffe</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Model</th>
+            <th>Hersteller</th>
+        </tr>
+    </thead>
+
+    <tbody id="starship_data">
+    </tbody>
+</table>
+
+<h1>Persohnen</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Birthyear</th>
+            <th>Größe</th>
+            <th>Gewicht</th>
+            <th>Harfarbe</th>
+            <th>Hautfarbe</th>
+        </tr>
+    </thead>
+
+    <tbody id="people_data">
+    </tbody>
+</table>
+
+
+<script>
+
+    const fetchTypes = {
+        Starships: {
+            url: "https://swapi.dev/api/starships",
+            keys: ["name", "model", "manufacturer"],
+        },
+        People: {
+            url: "https://swapi.dev/api/people",
+            keys: ["name", "gender", "birth_year", "hight", "mass", "hair_color", "skin_color"]
+        }
+    }
+
+    async function genTable(fetchType, tableId)
+    {
+        const table = document.getElementById(tableId)
+        const response = await (await fetch(fetchType.url)).json();
+
+        for (let i = 0; i < response.results.length; i++)
+        {
+            let row = "<tr>"
+            for (let j = 0; j < fetchType.keys.length; j++) {
+                row += `<td>${response.results[i][fetchType.keys[j]]}</td>`
+            }
+            table.innerHTML += row + "</tr>"
+        }
+
+        if (fetchType.url = response.next) {
+            await genTable(fetchType,tableId)
+        }
+    }
+
+    genTable(fetchTypes.Starships, "starship_data")
+    genTable(fetchTypes.People, "people_data")
+
+</script>
+</body>
+</html>
