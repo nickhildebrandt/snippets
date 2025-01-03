@@ -22,7 +22,9 @@ class Kasse {
     }
 
     public void setEuroBetrag(int euroBetrag) {
-        this.euroBetrag = euroBetrag;
+        if (this.euroBetrag + euroBetrag > 0) {
+            this.euroBetrag = euroBetrag;
+        }
     }
 
     public byte getCentBetrag() {
@@ -31,6 +33,10 @@ class Kasse {
 
     public void setCentBetrag(byte cent) {
         byte addCent = (byte) (this.centBetrag + cent);
+
+        if (this.centBetrag + cent < 0) {
+            return;
+        }
 
         if (addCent > 100) {
             this.euroBetrag += addCent / 100;
@@ -44,6 +50,10 @@ class Kasse {
     public void addBetrag(int euro, byte cent) {
         byte addCent = (byte) (this.centBetrag + cent);
         this.euroBetrag += euro;
+
+        if (this.euroBetrag + euro < 0 || this.centBetrag + cent < 0) {
+            return;
+        }
 
         if (addCent > 100) {
             this.euroBetrag += addCent / 100;
