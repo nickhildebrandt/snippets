@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Suche</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+
+        h1 {
+            color: #1e88e5;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        .info {
+            color: #333;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokémon Suche</h1>
+    <div class="container">
+        <select id="items">
+            <option value="0">Wähle ein Pokémon</option>
+        </select>
+        <div class="info" id="info">
+            Wähle ein Pokémon aus der Dropdown-Liste aus, um mehr zu erfahren!
+        </div>
+    </div>
+    <script>
+
+        const select = document.getElementById("items")
+        const info = document.getElementById("info")
+
+        async function getItems()
+        {
+            const count = 1000
+            const response = await (await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${count}&offset=0`)).json()
+
+            for (let i = 0; i < count; i++)
+            {
+                select.innerHTML += `<option value="${response.results[i].url}">${response.results[i].name}</option>`
+            }
+        }
+
+        select.addEventListener('change', async function(event) {
+            const selectedUrl = event.target.value
+
+            if (selectedUrl !== "0") {
+                const response = await (await fetch(selectedUrl)).json()
+
+                info.innerHTML = `<p>Name: ${response.name}</p>
+                                  <p>Größe: ${response.height}</p>
+                                  <p>Gewicht: ${response.weight}</p>
+                                  ${response.cries.legacy ? `<figure><figcaption>Alter Schrei</figcaption><audio controls src="${response.cries.legacy}"></audio></figure>` : ""}
+                                  ${response.cries.latest ? `<figure><figcaption>Neuer Schrei</figcaption><audio controls src="${response.cries.latest}"></audio></figure>` : ""}
+                                  ${response.sprites.front_default ? `<img src="${response.sprites.front_default}" alt="${response.name}-front">` : ""}`
+            }
+        })
+
+        getItems()
+    </script>
+</body>
+</html>
+
