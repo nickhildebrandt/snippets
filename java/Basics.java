@@ -7,7 +7,7 @@ public class Basics {
         int ganzeZahlen = 1024; // Ganzzahl, 32-Bit.
         short kurzeGanzeZahlen = 20; // Kurzformat für Ganzzahlen, 16-Bit.
         byte einByteZahl = 6; // Kleinster Ganzzahl-Datentyp, 8-Bit.
-        long großeGanzeZahlen = 1032749828L; // Große Ganzzahlen, 64-Bit (L erforderlich).
+        long großeGanzeZahlen = 103274988L; // Große Ganzzahlen, 64-Bit (L erforderlich).
         float fließkommaZahlen = 45.7F; // Fließkommazahl, 32-Bit (F erforderlich).
         double doppeltGenaueFließkommazahlen = 18; // Präzisere Fließkommazahl, 64-Bit.
         char buchstabe = 'A'; // Ein einzelnes Zeichen, Unicode.
